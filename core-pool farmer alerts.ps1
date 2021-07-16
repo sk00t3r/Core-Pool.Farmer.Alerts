@@ -41,11 +41,9 @@ $HTML = Invoke-RestMethod https://core-pool.com/dashboard -WebSession $websessio
 if ($HTML -match '<div class="badge badge-primary badge-success">Online</div>' -eq "True")
 {
 $state = "Online"
-Write-Host "Farmer Online"
 }
 elseif ($HTML -match '<div class="badge badge-primary badge-danger">Offline</div>' -eq "True")
 {
-Write-Host "Farmer Offline"
 $state = "Offline"
 $payload = [PSCustomObject]@{content = "<a:redalert:835994375556300822>  Uh Oh $NAME, Your Farmer Is Offline, I Will Update Your Farmer Status In $SecondsToMinutes Minutes.  <a:redalert:835994375556300822>"} | ConvertTo-Json
 Invoke-RestMethod -Method Post -ContentType 'application/json'-Body $payload -uri $DiscordURI
@@ -57,7 +55,6 @@ while($state -eq "Offline")
 $HTML = Invoke-RestMethod https://core-pool.com/dashboard -WebSession $websession
 if ($HTML -match '<div class="badge badge-primary badge-danger">Offline</div>' -eq "True")
 {
-Write-Host "Farmer Offline 2"
 $state = "Offline"
 $payload = [PSCustomObject]@{content = "<a:redalert:835994375556300822>  Uh Oh $NAME, Your Farmer Is Offline, I Will Update Your Farmer Status In $SecondsToMinutes Minutes.  <a:redalert:835994375556300822>"} | ConvertTo-Json
 Invoke-RestMethod -Method Post -ContentType 'application/json'-Body $payload -uri $DiscordURI
@@ -66,7 +63,6 @@ Sleep -Seconds $NotificationFrequencyInSeconds
 elseif ($HTML -match '<div class="badge badge-primary badge-success">Online</div>' -eq "True")
 {
 $state = "Online"
-Write-Host "Farmer Online 2"
 $payload = [PSCustomObject]@{content = "Hey $NAME, Your Farmer Is Back Online. No Need To Worry."} | ConvertTo-Json 
 Invoke-RestMethod -Method Post -ContentType 'application/json'-Body $payload -uri $DiscordURI
 Send-MailMessage @mailParamsOnline -BodyAsHTML
